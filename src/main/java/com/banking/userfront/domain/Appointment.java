@@ -1,16 +1,34 @@
 package com.banking.userfront.domain;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.*;
 import java.util.Date;
 
 /**
  * Created by AmitAgarwal on 4/11/19.
  */
+@Entity
 public class Appointment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column
+    @DateTimeFormat
     private Date date;
+
+    @Column
     private String location;
+
+    @Column
     private String description;
+
+    @Column
     private boolean confirmed;
+
+    @ManyToOne
+    @JoinColumn(name = "userid")
     private User user;
 
     public Appointment(Date date, String location, String description, boolean confirmed, User user) {

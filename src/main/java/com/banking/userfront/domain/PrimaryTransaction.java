@@ -1,20 +1,42 @@
 package com.banking.userfront.domain;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
 /**
  * Created by AmitAgarwal on 4/11/19.
  */
+@Entity
 public class PrimaryTransaction {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column
+    @DateTimeFormat
     private Date date;
+
+    @Column
     private String description;
+
+    @Column
     private String type;
+
+    @Column
     private String status;
+
+    @Column
     private double amount;
+
+    @Column
     private BigDecimal availableBalance;
+
+    @ManyToOne
+    @JoinColumn(name = "primary_account_id")
     private PrimaryAccount primaryAccount;
 
     public PrimaryTransaction(){}

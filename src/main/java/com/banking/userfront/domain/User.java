@@ -1,28 +1,52 @@
 package com.banking.userfront.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 import java.util.List;
 
 /**
  * Created by AmitAgarwal on 4/10/19.
  */
+@Entity
 public class User {
 
+    @Id
+    @Column(name = "userid", nullable = false, updatable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long userId;
-    private String userName;
+
+    @Column
+    private String username;
+
+    @Column
     private String password;
+
+    @Column
     private String firstName;
+
+    @Column
     private String lastName;
+
+    @Column(name="email", updatable = false, nullable = false)
     private String email;
+
+    @Column
     private String phone;
 
     private boolean enabled = true;
 
+    @OneToOne
     private PrimaryAccount primaryAccount;
 
+    @OneToOne
     private SavingsAccount savingsAccount;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Appointment> appointmentList;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Recipient> recipientList;
 
     public PrimaryAccount getPrimaryAccount() {
@@ -65,12 +89,12 @@ public class User {
         this.userId = userId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -125,7 +149,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "userId=" + userId +
-                ", userName='" + userName + '\'' +
+                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

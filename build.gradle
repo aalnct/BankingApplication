@@ -6,7 +6,7 @@ buildscript{
         }
     }
     dependencies{
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.5.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.3.RELEASE")
     }
 }
 group 'com.springboot.bankingsystem'
@@ -34,5 +34,8 @@ repositories {
 dependencies {
     compile ('org.springframework.boot:spring-boot-starter-web')
     compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+    compile("org.springframework:spring-jdbc")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile 'mysql:mysql-connector-java'
     testCompile("junit:junit")
 }

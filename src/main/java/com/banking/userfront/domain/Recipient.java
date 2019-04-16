@@ -1,16 +1,36 @@
 package com.banking.userfront.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
+
 /**
  * Created by AmitAgarwal on 4/11/19.
  */
+@Entity
 public class Recipient {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column
     private String name;
+
+    @Column
     private String email;
+
+    @Column
     private String phone;
+
+    @Column
     private String accountNumber;
+
+    @Column
     private String description;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     public Long getId() {

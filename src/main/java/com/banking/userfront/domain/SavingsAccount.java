@@ -1,16 +1,28 @@
 package com.banking.userfront.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
 /**
  * Created by AmitAgarwal on 4/11/19.
  */
+@Entity
 public class SavingsAccount {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column
     private int accountNumber;
+
+    @Column
     private BigDecimal accountBalance;
 
+    @OneToMany(mappedBy = "savingsAccount",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<SavingsTransaction> savingsTransactionList;
 
     public Long getId() {
