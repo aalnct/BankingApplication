@@ -1,15 +1,23 @@
 package com.banking.userfront.domain;
 
+import com.banking.userfront.domain.security.Authority;
+import com.banking.userfront.domain.security.UserRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by AmitAgarwal on 4/10/19.
  */
 @Entity
-public class User {
+public class User implements UserDetails{
 
     @Id
     @Column(name = "userid", nullable = false, updatable = false)
@@ -48,6 +56,10 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Recipient> recipientList;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Set<UserRole> userRoles = new HashSet<>();
 
     public PrimaryAccount getPrimaryAccount() {
         return primaryAccount;
@@ -93,8 +105,30 @@ public class User {
         return username;
     }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        userRoles.forEach(ur -> authorities.add(new Authority(ur.getRole().getName())));
+        return authorities;
     }
 
     public String getPassword() {
@@ -137,6 +171,7 @@ public class User {
         this.phone = phone;
     }
 
+    @Override
     public boolean isEnabled() {
         return enabled;
     }
@@ -145,8 +180,15 @@ public class User {
         this.enabled = enabled;
     }
 
-    @Override
-    public String toString() {
+    public Set<UserRole> getUserRoles() {
+        return userRoles;
+    }
+
+    public void setUserRoles(Set<UserRole> userRoles) {
+        this.userRoles = userRoles;
+    }
+
+    /*{
         return "User{" +
                 "userId=" + userId +
                 ", username='" + username + '\'' +
@@ -161,5 +203,5 @@ public class User {
                 ", appointmentList=" + appointmentList +
                 ", recipientList=" + recipientList +
                 '}';
-    }
+    }*/
 }

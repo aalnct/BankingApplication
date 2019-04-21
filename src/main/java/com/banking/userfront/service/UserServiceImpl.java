@@ -1,17 +1,38 @@
 package com.banking.userfront.service;
 
+import com.banking.userfront.dao.RoleDAO;
 import com.banking.userfront.dao.UserDAO;
 import com.banking.userfront.domain.User;
+import com.banking.userfront.domain.security.UserRole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Set;
 
 /**
  * Created by AmitAgarwal on 4/14/19.
  */
 @Service
+@Transactional
 public class UserServiceImpl implements UserService{
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
+
     @Autowired
     private UserDAO userDAO;
+
+    @Autowired
+    private RoleDAO roleDAO;
+
+    @Autowired
+    private AccountService accountService;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public void save(User user) {
         userDAO.save(user);
@@ -23,6 +44,32 @@ public class UserServiceImpl implements UserService{
 
     public User findByEmail(String email) {
         return userDAO.findByEmail(email);
+    }
+
+    @Override
+    public User createUser(User user, Set<UserRole> userRoles){
+        User localUser = userDAO.findByUsername(user.getUsername());
+        if(localUser != null){
+            LOG.warn("User with Username {} already exists ", user.getUsername());
+        }
+
+        else{
+            String encryptPassword = bCryptPasswordEncoder.encode(user.getPassword());
+            user.setPassword(encryptPassword);
+
+            for(UserRole ur : userRoles){
+                roleDAO.save(ur.getRole());
+            }
+
+            user.getUserRoles().addAll(userRoles);
+
+            user.setPrimaryAccount(accountService.createPrimaryAccount());
+            user.setSavingsAccount(accountService.createSavingsAccount());
+
+            localUser = userDAO.save(user);
+        }
+
+        return localUser;
     }
 
     public boolean checkUserExist(String username, String email){
