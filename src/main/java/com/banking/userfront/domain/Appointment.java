@@ -31,6 +31,10 @@ public class Appointment {
     @JoinColumn(name = "userid")
     private User user;
 
+    public Appointment(){
+
+    }
+
     public Appointment(Date date, String location, String description, boolean confirmed, User user) {
         this.date = date;
         this.location = location;
