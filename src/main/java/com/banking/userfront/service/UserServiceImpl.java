@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -70,6 +71,41 @@ public class UserServiceImpl implements UserService{
         }
 
         return localUser;
+    }
+
+    @Override
+    public User addUser(User user, User newUser) {
+        user.setUsername(newUser.getUsername());
+        user.setFirstName(newUser.getFirstName());
+        user.setLastName(newUser.getLastName());
+        user.setEmail(newUser.getEmail());
+        user.setPhone(newUser.getPhone());
+
+        return user;
+    }
+
+    @Override
+    public User saveUser(User user){
+        return userDAO.save(user);
+    }
+
+    @Override
+    public List<User> findUserList() {
+        return userDAO.findAll();
+    }
+
+    @Override
+    public void enableUser(String username) {
+        User user = findByUserName(username);
+        user.setEnabled(true);
+        userDAO.save(user);
+    }
+
+    @Override
+    public void disableUser(String username) {
+        User user = findByUserName(username);
+        user.setEnabled(false);
+        userDAO.save(user);
     }
 
     public boolean checkUserExist(String username, String email){
