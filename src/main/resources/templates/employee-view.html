@@ -1,0 +1,27 @@
+<html>
+<head>
+    <style>
+        table.emp-table{width:100%;}
+        table.emp-table td {border:solid 1px #aaa;}
+        table.emp-table th {border:solid 1px #aaa; background: #bbb;}
+    </style>
+</head>
+<body>
+<h3>Saved Employees</h3>
+<table class="emp-table">
+    <tr>
+        <th>Name</th>
+        <th>Department</th>
+        <th>Date Of Birth</th>
+    </tr>
+    <tr th:each="employee : ${employees}">
+        <td th:text="${employee.name}"></td>
+        <td th:text="${employee.department}"></td>
+        <td th:text="${employee.dateOfBirth}"></td>
+    </tr>
+</table>
+</form>
+<br/>
+<a th:href="@{/}">Add new employee</a>
+</body>
+</html>
